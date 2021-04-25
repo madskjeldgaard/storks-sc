@@ -1,0 +1,82 @@
+TITLE:: Hakkebraet
+summary:: A convenience class for the hakkebraet midi controller
+categories::MIDI
+related:: Classes/MIDIIn
+
+DESCRIPTION::
+A convenience class for the hakkebraet midi controller
+
+CLASSMETHODS::
+
+METHOD:: new
+Instantiate and initialize the Hakkebraet class. 
+By default this will if necessary initialize the midiclient and connect the device.
+
+ARGUMENT::fourteenBit
+if set to true, it will create 14 bit responders, if not it will create normal 7 bit responders. This should match the setting on the Hakkebraet device.
+
+ARGUMENT::connectOnInit
+Automatically initialize MIDI and connect to the device
+
+ARGUMENT::registerDefaults
+If set to true, this will register default actions for all responders that will post info
+
+returns:: a Hakkebraet
+
+
+INSTANCEMETHODS::
+
+METHOD::init
+
+ARGUMENT::fourteenBit
+
+ARGUMENT::connectOnInit
+
+ARGUMENT::registerDefaults
+
+returns::this
+
+METHOD::register
+
+ARGUMENT::layer
+The device layer / midi channel of the encoder you want to register
+
+ARGUMENT::page
+The device page of the encoder you want to register
+
+ARGUMENT::encoder
+The encoder number on the layer and page you want to register
+
+ARGUMENT::callbackFunction
+
+This is a function that is called every time the responder is activated. It is passed the value and midi channel as arguments.
+
+METHOD::get
+Get the corresponding responder
+
+ARGUMENT::layer
+
+ARGUMENT::page
+
+ARGUMENT::encoder
+
+METHOD::connect
+Manually connect device
+
+EXAMPLES::
+
+code::
+h = Hakkebraet.new();
+
+(
+h.register(
+ layer: 0, 
+ page: 0, 
+ encoder: 0, 
+ callbackFunction: {|val,chan|
+ "Boomshakala: %".format(val).postln;
+}
+)
+
+)
+::

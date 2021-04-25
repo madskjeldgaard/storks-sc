@@ -1,0 +1,11 @@
+(
+  name: "Hakkebraet",
+  summary: "A convenience class for the hakkebraet midi controller",
+  version: "0.001",
+  schelp: "Hakkebraet.schelp",
+  dependencies: ,
+  license: "GNU GPL v3.0",
+  copyright: "madskjeldgaard",
+  ext_dependency: "",
+  url: "https://github.com/madskjeldgaard/hakkebraet-sc"
+)
