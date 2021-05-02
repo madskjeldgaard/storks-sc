@@ -78,5 +78,64 @@ h.register(
 }
 )
 
+
+
+)
+
+
+// A bit more extensive example
+h = Hakkebraet.new();
+
+(
+Ndef(\g1, { 
+	var gdur = \gdur.kr(0.01);
+	var wonk = \wonk.kr(0.5);
+	var trig = Impulse.kr(\density.kr(10.1) * LFNoise2.kr(wonk.linexp(0.0,1.0,1,100)).range(1.0-wonk,1.0+wonk));
+	var direction = \direction.kr(0.01);
+	var rise = direction;
+	var fall = 1.0-direction;
+	var curve = \curve.kr(0.1) * (-10);
+	var env = Env.perc(rise, fall, curve: curve).kr(gate: trig, timeScale: gdur, doneAction: 0);
+	var sig = SinOscFB.ar(\freq.kr(200), \fb.kr(0) * 4) * env;
+
+	Pan2.ar(sig, \pan.kr(0));
+}).mold(2).play;
+)
+
+// Control
+(
+
+h.register(0, 0, 0, {|val|
+	Ndef(\g1).set(\density, val.linexp(0,18363,0.01,100.0));
+});
+
+h.register(0, 0, 1, {|val|
+	Ndef(\g1).set(\pan, val.linlin(0,18363,-1.0,1.0));
+});
+
+h.register(0, 0, 2, {|val|
+	Ndef(\g1).set(\freq, val.linexp(0,18363,80,1000.0));
+});
+
+h.register(0, 0, 3, {|val|
+	Ndef(\g1).set(\gdur, val.linexp(0,18363,0.0001,1.0));
+});
+
+h.register(0, 0, 4, {|val|
+	Ndef(\g1).set(\curve, val.linlin(0,18363,0.0001,1.0));
+});
+
+h.register(0, 0, 5, {|val|
+	Ndef(\g1).set(\wonk, val.linlin(0,18363,0.0,1.0));
+});
+
+h.register(0, 0, 6, {|val|
+	Ndef(\g1).set(\fb, val.linlin(0,18363,0.0,1.0));
+});
+
+h.register(0, 0, 7, {|val|
+	Ndef(\g1).set(\direction, val.linlin(0,18363,0.0,1.0));
+});
+
 )
 ::

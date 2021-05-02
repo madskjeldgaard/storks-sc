@@ -10,16 +10,23 @@ Hakkebraet {
 	var <numPages = 8;
 	var <numEncoders = 8;
 
-	*new { |fourteenBit=true, connectOnInit=true, registerDefaults=true|
-		^super.new.init(fourteenBit, connectOnInit, registerDefaults);
+	var <maxMidiVal14Bit = 16363;
+	var <maxMidiVal7Bit = 127;
+
+	var scale;
+
+	*new { |fourteenBit=true, connectOnInit=true, registerDefaults=true, scaledValues=true|
+		^super.new.init(fourteenBit, connectOnInit, registerDefaults, scaledValues);
 	}
 
-	init { | fourteenBit, connectOnInit, registerDefaults |
+	init { | fourteenBit, connectOnInit, registerDefaults, scaledValues|
 		responders = numLayers.collect{|layNum|
 			numPages.collect{|pageNum|
 				Array.newClear(numEncoders)
 			}
 		};
+
+		scale = scaledValues;
 
 		if(connectOnInit, { 
 			this.connect();
@@ -139,5 +146,3 @@ H14BCC {
 		}
 	}
 }
-
-	
