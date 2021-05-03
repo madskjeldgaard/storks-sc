@@ -30,7 +30,6 @@ HakkeMappingMatrix{
 	addInstanceToGlobals{
 		var lookup = proxy.key.asSymbol;
 		if(instances.at(lookup).isNil, {
-			"Adding % to global HakkeMappingMatrix.instances".format(lookup).postln;
 			instances.put(lookup, this)
 		})
 	}
@@ -69,12 +68,9 @@ HakkeMappingMatrix{
 	}
 
 	recallState{
-		"Recalling state".postln;
 		buttonMatrixState.do{|row, rowNum|
 			row.do{|rowButtonState, rowButton|
-				// rowButtonState.postln; rowButton.postln;
-				"Row %, button %, state: %".format(rowNum, rowButton, rowButtonState).postln;
-				// matrix.rows[row][rowButton].postln;
+				// "Row %, button %, state: %".format(rowNum, rowButton, rowButtonState).postln;
 				matrix.rows[rowNum][rowButton].value_(rowButtonState)
 			}
 		}
