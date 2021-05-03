@@ -46,6 +46,7 @@ Hakkebraet {
 	}
 
 	// Callbacks receive the arguments val and chan
+	// Callback function can be either a function or a collection of functions. In the latter case, all the collected functions will be passed val and chan as arguments.
 	register{|layer, page, encoder, callbackFunction|
 		var label = "h_layer%_page%_enc%".format(layer, page, encoder).asSymbol;
 		var offset = page * numEncoders;
@@ -69,7 +70,19 @@ Hakkebraet {
 				"% (cc %/% chan %): %".format(label, cc1, cc2, chan, val).postln;
 			})
 		}, {
-			responder.func_(callbackFunction)
+			// Register function
+			if(callbackFunction.class == Function, {
+				responder.func_(callbackFunction)
+			}, {
+				// Register collection of funtions
+				if(callbackFunction.isKindOf(Collection), {
+					responder.func_({|val, chan|
+						callbackFunction.do{|funcItem|
+							funcItem.value(val, chan)
+						}
+					})
+				})
+			})
 		});
 
 		responders[layer][page][encoder] = responder;

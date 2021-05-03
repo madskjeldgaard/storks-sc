@@ -7,6 +7,8 @@ HakkeMappingMatrix{
 	var proxy, <window;
 	var hakkebraet, layer, page, <matrix, buttonMatrixState;
 
+	var encoderCallbacks;
+
 	*initClass{
 		Class.initClassTree(IdentityDictionary);	
 		// This is necessary to make it possible to query global instances before the first instance is created
@@ -22,7 +24,7 @@ HakkeMappingMatrix{
 		page = pageNum;
 		proxy = nodeproxy;
 		hakkebraet = hakkebraetInstance;
-		// this.registerMatrixButtonActions();
+		encoderCallbacks = Array.newClear(hakkebraet.numEncoders);
 		this.openWindow();
 		this.addInstanceToGlobals();
 	}
@@ -48,11 +50,6 @@ HakkeMappingMatrix{
 		// If window was open before, recall state of buttons
 		if(buttonMatrixState.isNil.not, {
 			this.recallState()		
-		});
-
-		// Save state of buttons when closing
-		window.onClose_({
-			// this.saveState();
 		});
 
 		// Make window visible
@@ -99,6 +96,7 @@ HakkeMappingMatrix{
 
 		rowLabels.do{|ckey, ckeyIndex|
 			hakkebraet.numEncoders.do{|encNum|
+				encoderCallbacks[encNum] = IdentityDictionary.new;
 				matrix.action_(
 					encNum, 
 					ckeyIndex, 
@@ -130,8 +128,10 @@ HakkeMappingMatrix{
 							4, {
 								this.getCallback(ckey, \random)
 							});
-
-							hakkebraet.register(layer, page, encNum, callback);
+							
+							encoderCallbacks[encNum][ckey] = callback;
+							// encoderCallbacks[encNum]
+							hakkebraet.register(layer, page, encNum, encoderCallbacks[encNum]);
 					}
 				);
 			}
@@ -153,7 +153,6 @@ HakkeMappingMatrix{
 			\inverted ->  {|val, chan|
 				// @TODO do not hardcore scaling here!
 				proxy.set(controlKey, spec.map(1.0-(val / hakkebraet.maxMidiVal14Bit)));
-
 			},
 			\sine -> {|val, chan|
 				// @TODO do not hardcore scaling here!
