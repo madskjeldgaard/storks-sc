@@ -1,11 +1,17 @@
 /*
 * TODO
-* Keep track of instances
 * Function Chain 
 */
 HakkeMappingMatrix{
-	var proxy;
-	var hakkebraet, layer, page, matrix;
+	classvar <instances;
+	var proxy, <window;
+	var hakkebraet, layer, page, <matrix, buttonMatrixState;
+
+	*initClass{
+		Class.initClassTree(IdentityDictionary);	
+		// This is necessary to make it possible to query global instances before the first instance is created
+		instances = IdentityDictionary.new();
+	}
 
 	*new { |nodeproxy, hakkebraetInstance, layerNum=0, pageNum=0|
 		^super.new.init(nodeproxy, hakkebraetInstance, layerNum, pageNum);
@@ -16,17 +22,74 @@ HakkeMappingMatrix{
 		page = pageNum;
 		proxy = nodeproxy;
 		hakkebraet = hakkebraetInstance;
+		// this.registerMatrixButtonActions();
+		this.openWindow();
+		this.addInstanceToGlobals();
+	}
+
+	addInstanceToGlobals{
+		var lookup = proxy.key.asSymbol;
+		if(instances.at(lookup).isNil, {
+			"Adding % to global HakkeMappingMatrix.instances".format(lookup).postln;
+			instances.put(lookup, this)
+		})
+	}
+
+	openWindow{
+
+		// Create window
+		window = Window.new(name: "HakkeMatrix %".format(proxy.key));
+
+		// Create and attach functions to be performed on button press
 		this.registerMatrixButtonActions();
 
-		Window.new()
-		.layout_(
-			matrix.layout
-		).front();
+		// Button layout
+		window.layout_(matrix.layout);
 
+		// If window was open before, recall state of buttons
+		if(buttonMatrixState.isNil.not, {
+			this.recallState()		
+		});
+
+		// Save state of buttons when closing
+		window.onClose_({
+			// this.saveState();
+		});
+
+		// Make window visible
+		window.front();
+	}
+
+	saveState{
+		buttonMatrixState = matrix.rows.collect{|row|
+			row.collect{|button|
+				button.value;
+			}
+		}
+	}
+
+	recallState{
+		"Recalling state".postln;
+		buttonMatrixState.do{|row, rowNum|
+			row.do{|rowButtonState, rowButton|
+				// rowButtonState.postln; rowButton.postln;
+				"Row %, button %, state: %".format(rowNum, rowButton, rowButtonState).postln;
+				// matrix.rows[row][rowButton].postln;
+				matrix.rows[rowNum][rowButton].value_(rowButtonState)
+			}
+		}
 	}
 
 	registerMatrixButtonActions{
 		var rowLabels = proxy.controlKeys;
+		var buttonStates = [
+			[" "],
+			["normal"],
+			["reverse"],
+			["sine"],
+			["random"],
+		];
+
 		matrix = GuiButtonMatrix.new(
 			rowLabels.size, 
 			hakkebraet.numEncoders, 
@@ -34,7 +97,8 @@ HakkeMappingMatrix{
 			// @TODO: Buttons as well!!!
 			hakkebraet.numEncoders.collect{|encNum| 
 				"enc%".format(encNum) 
-			}
+			},
+			buttonStates
 		);
 
 		rowLabels.do{|ckey, ckeyIndex|
@@ -43,15 +107,13 @@ HakkeMappingMatrix{
 					encNum, 
 					ckeyIndex, 
 					{|el|
-						var spec = 
-						// Is there a global spec for this key?
-						Spec.specs.at(ckey) ?? 
-						// Ndef local spec ? 
-						this.specs.at(ckey) ??
-						// Default spec
-						[0.0, 1.0].asSpec;
+						var spec = this.getSpec(ckey);
 
-						var callback = switch(el.value, 
+						var callback;
+
+						this.saveState();
+
+						callback = switch(el.value, 
 							// Nothing
 							0, {  
 								this.getCallback(ckey, \nothing)
@@ -83,8 +145,11 @@ HakkeMappingMatrix{
 
 	getCallback{|controlKey, callbackName|
 		var spec = this.getSpec(controlKey);
-		var callbacks = IdentityDictionary[
-			\nothing -> {|val, chan| },
+		var callbacks;
+
+		callbacks = IdentityDictionary[
+			\nothing -> {|val, chan| 
+			},
 			\normal -> {|val, chan|
 				// @TODO do not hardcore scaling here!
 				proxy.set(controlKey, spec.map(val / hakkebraet.maxMidiVal14Bit));
@@ -102,6 +167,7 @@ HakkeMappingMatrix{
 			},
 			\random -> {|val, chan|
 				var envSize = 3;
+
 				// @TODO do not hardcore scaling here!
 				val = (val / hakkebraet.maxMidiVal14Bit);
 				val = Env(
@@ -119,7 +185,7 @@ HakkeMappingMatrix{
 	getSpec{|controlKey|
 		^Spec.specs.at(controlKey) ?? 
 		// Ndef local spec ? 
-		this.specs.at(controlKey) ??
+		proxy.specs.at(controlKey) ??
 		// Default spec
 		[0.0, 1.0].asSpec;
 	}

@@ -1,5 +1,10 @@
 +NodeProxy{
 	hakkeMatrix{|hakkebraet, layer=0, page=0|
-		HakkeMappingMatrix.new(this, hakkebraet, layer, page)
+		var matrix = HakkeMappingMatrix.instances[this.key];
+		if(matrix.isNil, {
+			HakkeMappingMatrix.new(this, hakkebraet, layer, page)
+		}, {
+			matrix.openWindow();
+		})
 	}
 }
