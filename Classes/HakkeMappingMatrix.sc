@@ -37,6 +37,12 @@ HakkeMappingMatrix{
 	}
 
 	openWindow{
+		var header = StaticText.new().string_(
+			"HakkeMatrix ch % page % mapped to NodeProxy %".format(layer, page, proxy.key)
+		)
+		.font_(
+			Font.sansSerif.size_(16).italic_(true)
+		);
 
 		// Create window
 		window = Window.new(name: "HakkeMatrix %".format(proxy.key));
@@ -45,7 +51,12 @@ HakkeMappingMatrix{
 		this.registerMatrixButtonActions();
 
 		// Button layout
-		window.layout_(matrix.layout);
+		window.layout_(
+			VLayout(
+				header,
+				matrix.layout
+			)
+		);
 
 		// If window was open before, recall state of buttons
 		if(buttonMatrixState.isNil.not, {
@@ -148,23 +159,21 @@ HakkeMappingMatrix{
 			},
 			\normal -> {|val, chan|
 				// @TODO do not hardcore scaling here!
-				proxy.set(controlKey, spec.map(val / hakkebraet.maxMidiVal14Bit));
+				proxy.set(controlKey, spec.map(val));
 			},
 			\inverted ->  {|val, chan|
 				// @TODO do not hardcore scaling here!
-				proxy.set(controlKey, spec.map(1.0-(val / hakkebraet.maxMidiVal14Bit)));
+				proxy.set(controlKey, spec.map(1.0-val ));
 			},
 			\sine -> {|val, chan|
 				// @TODO do not hardcore scaling here!
-				val = (val / hakkebraet.maxMidiVal14Bit);
 				val = Env.sine[val];
 				proxy.set(controlKey, spec.map(val));
 			},
 			\random -> {|val, chan|
 				var envSize = 3;
 
-				// @TODO do not hardcore scaling here!
-				val = (val / hakkebraet.maxMidiVal14Bit);
+				// @TODO do not hardcode scaling here!
 				val = Env(
 					levels: Array.rand(envSize, 0.0000001,1.0), 
 					times: Array.rand(envSize - 1,0.000001,1.0).normalizeSum,
@@ -178,9 +187,10 @@ HakkeMappingMatrix{
 	}
 
 	getSpec{|controlKey|
-		^Spec.specs.at(controlKey) ?? 
-		// Ndef local spec ? 
+		^ // Ndef local spec ? 
 		proxy.specs.at(controlKey) ??
+		// Global spec
+		Spec.specs.at(controlKey) ?? 
 		// Default spec
 		[0.0, 1.0].asSpec;
 	}
