@@ -3,7 +3,7 @@
   summary: "A convenience class for the hakkebraet midi controller",
   version: "0.002",
   schelp: "Hakkebraet.schelp",
-  dependencies: ,
+  dependencies: nil,
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
   ext_dependency: "GuiButtonMatrix",
