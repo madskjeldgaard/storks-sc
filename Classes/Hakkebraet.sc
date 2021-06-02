@@ -93,7 +93,7 @@ Hakkebraet {
 	}
 
 	connect{
-		if(MIDIClient.initialized.not,{
+		if(MIDIClient.initialized.not, {
 			"MIDIClient not initialized... initializing now".postln;
 			MIDIClient.init;
 		});
@@ -101,7 +101,7 @@ Hakkebraet {
 		MIDIClient.sources.do{|src, srcNum| 
 			if(src.device == "Hakkebraet", {
                 if(try{MIDIIn.isHakkebraetConnected}.isNil, {
-                    if(MIDIClient.sources.any({|e| e.device=="HJKL"}), {
+                    if(MIDIClient.sources.any({|e| e.device=="Hakkebraet"}), {
 			    	"Connecting Hakkebraet %".format(srcNum).postln;
                         MIDIIn.connect(srcNum, src).addUniqueMethod(\isHakkebraetConnected, {true});
                     });
