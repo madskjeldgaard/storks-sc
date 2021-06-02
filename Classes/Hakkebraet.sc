@@ -101,7 +101,7 @@ Hakkebraet {
 		MIDIClient.sources.do{|src, srcNum| 
 			if(src.device == "Hakkebraet", {
 				"Connecting Hakkebraet %".format(srcNum).postln;
-				MIDIIn.connect(srcNum, src)
+				try{MIDIIn.connect(srcNum, src)};
 			});
 		}
 	}
