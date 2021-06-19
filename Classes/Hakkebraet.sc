@@ -93,15 +93,19 @@ Hakkebraet {
 	}
 
 	connect{
-		if(MIDIClient.initialized.not,{
+		if(MIDIClient.initialized.not, {
 			"MIDIClient not initialized... initializing now".postln;
 			MIDIClient.init;
 		});
 
 		MIDIClient.sources.do{|src, srcNum| 
 			if(src.device == "Hakkebraet", {
-				"Connecting Hakkebraet %".format(srcNum).postln;
-				try{MIDIIn.connect(srcNum, src)};
+                if(try{MIDIIn.isHakkebraetConnected}.isNil, {
+                    if(MIDIClient.sources.any({|e| e.device=="Hakkebraet"}), {
+			    	"Connecting Hakkebraet %".format(srcNum).postln;
+                        MIDIIn.connect(srcNum, src).addUniqueMethod(\isHakkebraetConnected, {true});
+                    });
+                }, {"Hakkebraet is already connected... (device is busy)".postln});
 			});
 		}
 	}
