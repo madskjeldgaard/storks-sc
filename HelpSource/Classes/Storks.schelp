@@ -1,19 +1,19 @@
-TITLE:: Hakkebraet
-summary:: A convenience class for the hakkebraet midi controller
+TITLE:: Storks
+summary:: A convenience class for the storks midi/osc controller
 categories::MIDI
 related:: Classes/MIDIIn
 
 DESCRIPTION::
-A convenience class for the hakkebraet midi controller
+A convenience class for the storks midi/osc controller
 
 CLASSMETHODS::
 
 METHOD:: new
-Instantiate and initialize the Hakkebraet class. 
+Instantiate and initialize the Storks class.
 By default this will if necessary initialize the midiclient and connect the device.
 
 ARGUMENT::fourteenBit
-if set to true, it will create 14 bit responders, if not it will create normal 7 bit responders. This should match the setting on the Hakkebraet device.
+if set to true, it will create 14 bit responders, if not it will create normal 7 bit responders. This should match the setting on the Storks device.
 
 ARGUMENT::connectOnInit
 Automatically initialize MIDI and connect to the device
@@ -21,8 +21,7 @@ Automatically initialize MIDI and connect to the device
 ARGUMENT::registerDefaults
 If set to true, this will register default actions for all responders that will post info
 
-returns:: a Hakkebraet
-
+returns:: a Storks
 
 INSTANCEMETHODS::
 
@@ -66,28 +65,25 @@ Manually connect device
 EXAMPLES::
 
 code::
-h = Hakkebraet.new();
+h = Storks.new();
 
 (
 h.register(
- layer: 0, 
- page: 0, 
- encoder: 0, 
+ layer: 0,
+ page: 0,
+ encoder: 0,
  callbackFunction: {|val,chan|
  "Boomshakala: %".format(val).postln;
 }
 )
 
-
-
 )
 
-
 // A bit more extensive example
-h = Hakkebraet.new();
+h = Storks.new();
 
 (
-Ndef(\g1, { 
+Ndef(\g1, {
 	var gdur = \gdur.kr(0.01);
 	var wonk = \wonk.kr(0.5);
 	var trig = Impulse.kr(\density.kr(10.1) * LFNoise2.kr(wonk.linexp(0.0,1.0,1,100)).range(1.0-wonk,1.0+wonk));

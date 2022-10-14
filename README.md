@@ -1,10 +1,10 @@
-# Hakkebraet
+# Storks
 
-### A convenience class for the hakkebraet midi controller
+### A convenience class for the storks midi/osc controller
 
-A convenience class for the hakkebraet midi controller
+A convenience class for the storks midi/osc controller
 
 ### Installation
 
 Open up SuperCollider and evaluate the following line of code:
-`Quarks.install("https://github.com/madskjeldgaard/hakkebraet")`
+`Quarks.install("https://github.com/madskjeldgaard/storks-sc")`

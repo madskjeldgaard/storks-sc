@@ -1,0 +1,11 @@
+(
+  name: "storks-sc",
+  summary: "A convenience class for the storks osc/midi controller",
+  version: "0.005",
+  schelp: "Storks.schelp",
+  dependencies: nil,
+  license: "GNU GPL v3.0",
+  copyright: "madskjeldgaard",
+  ext_dependency: "GuiButtonMatrix",
+  url: "https://github.com/madskjeldgaard/storks-sc"
+)

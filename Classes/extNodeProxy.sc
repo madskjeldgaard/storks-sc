@@ -1,3 +1,4 @@
+/*
 +NodeProxy{
 	hakkeMatrix{|hakkebraet, layer=0, page=0|
 		var matrix = HakkeMappingMatrix.instances[this.key];
@@ -8,3 +9,4 @@
 		})
 	}
 }
+*/

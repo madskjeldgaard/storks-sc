@@ -1,7 +1,9 @@
 /*
 * TODO
-* Function Chain 
+* Function Chain
 */
+
+/*
 HakkeMappingMatrix{
 	classvar <instances;
 	var proxy, <window;
@@ -10,7 +12,7 @@ HakkeMappingMatrix{
 	var encoderCallbacks;
 
 	*initClass{
-		Class.initClassTree(IdentityDictionary);	
+		Class.initClassTree(IdentityDictionary);
 		// This is necessary to make it possible to query global instances before the first instance is created
 		instances = IdentityDictionary.new();
 	}
@@ -60,7 +62,7 @@ HakkeMappingMatrix{
 
 		// If window was open before, recall state of buttons
 		if(buttonMatrixState.isNil.not, {
-			this.recallState()		
+			this.recallState()
 		});
 
 		// Make window visible
@@ -95,12 +97,12 @@ HakkeMappingMatrix{
 		];
 
 		matrix = GuiButtonMatrix.new(
-			rowLabels.size, 
-			hakkebraet.numEncoders, 
-			rowLabels, 
+			rowLabels.size,
+			hakkebraet.numEncoders,
+			rowLabels,
 			// @TODO: Buttons as well!!!
-			hakkebraet.numEncoders.collect{|encNum| 
-				"enc%".format(encNum) 
+			hakkebraet.numEncoders.collect{|encNum|
+				"enc%".format(encNum)
 			},
 			buttonStates
 		);
@@ -109,8 +111,8 @@ HakkeMappingMatrix{
 			hakkebraet.numEncoders.do{|encNum|
 				encoderCallbacks[encNum] = IdentityDictionary.new;
 				matrix.action_(
-					encNum, 
-					ckeyIndex, 
+					encNum,
+					ckeyIndex,
 					{|el|
 						var spec = this.getSpec(ckey);
 
@@ -118,28 +120,28 @@ HakkeMappingMatrix{
 
 						this.saveState();
 
-						callback = switch(el.value, 
+						callback = switch(el.value,
 							// Nothing
-							0, {  
+							0, {
 								this.getCallback(ckey, \nothing)
-							}, 
+							},
 							// Normal mapping
-							1, { 
+							1, {
 								this.getCallback(ckey, \normal)
 							},
 							// Inverted
-							2, { 
+							2, {
 								this.getCallback(ckey, \inverted)
-							}, 
+							},
 							// Sine
 							3, {
 								this.getCallback(ckey, \sine)
-							}, 
+							},
 							// Random
 							4, {
 								this.getCallback(ckey, \random)
 							});
-							
+
 							encoderCallbacks[encNum][ckey] = callback;
 							// encoderCallbacks[encNum]
 							hakkebraet.register(layer, page, encNum, encoderCallbacks[encNum]);
@@ -155,7 +157,7 @@ HakkeMappingMatrix{
 		var callbacks;
 
 		callbacks = IdentityDictionary[
-			\nothing -> {|val, chan| 
+			\nothing -> {|val, chan|
 			},
 			\normal -> {|val, chan|
 				// @TODO do not hardcore scaling here!
@@ -175,7 +177,7 @@ HakkeMappingMatrix{
 
 				// @TODO do not hardcode scaling here!
 				val = Env(
-					levels: Array.rand(envSize, 0.0000001,1.0), 
+					levels: Array.rand(envSize, 0.0000001,1.0),
 					times: Array.rand(envSize - 1,0.000001,1.0).normalizeSum,
 					curve: Array.rand(envSize - 1, -10.0,10.0)
 				)[val];
@@ -187,11 +189,12 @@ HakkeMappingMatrix{
 	}
 
 	getSpec{|controlKey|
-		^ // Ndef local spec ? 
+		^ // Ndef local spec ?
 		proxy.specs.at(controlKey) ??
 		// Global spec
-		Spec.specs.at(controlKey) ?? 
+		Spec.specs.at(controlKey) ??
 		// Default spec
 		[0.0, 1.0].asSpec;
 	}
 }
+*/
