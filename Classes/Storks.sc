@@ -6,9 +6,10 @@
 Storks {
 	var <responders;
 
-	var <numChannels = 16;
-	var <numLayersPerChannel = 4;
-	var <numEncoders = 16;
+	const <numChannels = 16;
+	const <numLayersPerChannel = 4;
+	const <numEncoders = 16;
+	const <numButtons = 8;
 
 	var <maxMidiVal14Bit = 16363;
 	var <maxMidiVal7Bit = 127;
@@ -35,11 +36,15 @@ Storks {
 
 		if(registerDefaults, {
 			numChannels.do{|chanNum|
-				numLayersPerChannel.do{|layerNum|
-					numEncoders.do{|encNum|
-						this.register(chanNum, layerNum, encNum)
-					}
-				}
+                numLayersPerChannel.do{|layerNum|
+                    numEncoders.do{|encNum|
+                        this.registerEnc(chanNum, layerNum, encNum)
+                    };
+                };
+                numButtons.do{|butNum|
+                    this.registerButton(chanNum, butNum)
+                };
+
 			};
 		});
 
@@ -48,9 +53,37 @@ Storks {
 		^this
 	}
 
+    registerButton{|channel, button, callbackFunctionOn, callbackFunctionOff|
+        var label = "storks_chan%_button%".format(channel, button).asSymbol;
+        var offset = 44;
+        var noteNum = button + offset;
+        var chan = channel;
+
+        // Create responder
+        var responderOn = MIDIFunc.noteOn(
+            callbackFunctionOn ? {|val,chan|
+                "% (note  % chan %): % ON".format(label, noteNum, chan, val).postln;
+            },
+            noteNum,
+            chan
+        );
+
+        var responderOff = MIDIFunc.noteOff(
+            callbackFunctionOff ? {|val,chan|
+                "% (note  % chan %): % OFF".format(label, noteNum, chan, val).postln;
+            },
+            noteNum,
+            chan
+        );
+
+        "Creating Storks responder %".format(label).postln;
+
+        // TODO:
+        // responders[channel][layer][button] = responderOn;
+    }
 	// Callbacks receive the arguments val and chan
 	// Callback function can be either a function or a collection of functions. In the latter case, all the collected functions will be passed val and chan as arguments.
-	register{|channel, layer, encoder, callbackFunction|
+	registerEnc{|channel, layer, encoder, callbackFunction|
 		var label = "storks_chan%_layer%_enc%".format(channel, layer, encoder).asSymbol;
 		var offset = layer * numEncoders;
 		var cc1 = encoder + offset;
@@ -61,7 +94,8 @@ Storks {
 		var responder = CC14.new(
 			cc1,
 			cc2,
-			chan
+			chan,
+            fix: false
 		);
 
 		"Creating Storks responder %".format(label).postln;
